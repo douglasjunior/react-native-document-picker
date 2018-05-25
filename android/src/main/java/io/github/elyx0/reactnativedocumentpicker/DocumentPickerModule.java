@@ -45,6 +45,7 @@ public class DocumentPickerModule extends ReactContextBaseJavaModule {
 
 	private static final String FIELD_URI = "uri";
 	private static final String FIELD_PATH = "path";
+	private static final String FIELD_LAST_MODIFIED = "lastModified";
 	private static final String FIELD_NAME = "name";
 	private static final String FIELD_TYPE = "type";
 	private static final String FIELD_SIZE = "size";
@@ -209,6 +210,7 @@ public class DocumentPickerModule extends ReactContextBaseJavaModule {
 		map.putInt(FIELD_SIZE, (int) file.length());
 		map.putString(FIELD_NAME, file.getName());
 		map.putString(FIELD_TYPE, mimeTypeFromName(file.getAbsolutePath()));
+		map.putDouble(FIELD_LAST_MODIFIED, file.lastModified());
 
 		return map;
 	}
@@ -236,6 +238,11 @@ public class DocumentPickerModule extends ReactContextBaseJavaModule {
 				int displayNameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
 				if (!cursor.isNull(displayNameIndex)) {
 					map.putString(FIELD_NAME, cursor.getString(displayNameIndex));
+				}
+
+				int lastModifiedIndex = cursor.getColumnIndex(DocumentsContract.Document.COLUMN_LAST_MODIFIED);
+				if (!cursor.isNull(lastModifiedIndex)) {
+					map.putDouble(FIELD_LAST_MODIFIED, cursor.getLong(lastModifiedIndex));
 				}
 
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
