@@ -17,6 +17,7 @@ static NSString *const OPTION_TYPE = @"type";
 static NSString *const OPTION_MULIPLE = @"multiple";
 
 static NSString *const FIELD_PATH = @"path";
+static NSString *const FIELD_LAST_MODIFIED = @"lastModified";
 static NSString *const FIELD_URI = @"uri";
 static NSString *const FIELD_NAME = @"name";
 static NSString *const FIELD_TYPE = @"type";
@@ -97,6 +98,10 @@ RCT_EXPORT_METHOD(pick:(NSDictionary *)options
             NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:newURL.path error:&attributesError];
             if(!attributesError) {
                 [result setValue:[fileAttributes objectForKey:NSFileSize] forKey:FIELD_SIZE];
+                
+                NSDate *lastModified = [fileAttributes objectForKey:NSFileModificationDate];
+                NSNumber *lastModifiedMillis = [NSNumber numberWithDouble:[lastModified timeIntervalSince1970] * 1000];
+                [result setValue:lastModifiedMillis forKey:FIELD_LAST_MODIFIED];
             } else {
                 NSLog(@"%@", attributesError);
             }
